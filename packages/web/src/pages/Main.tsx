@@ -29,12 +29,12 @@ function MainPage() {
         </nav>
   
         {/* Main Content */}
-        <div className="container mx-auto mt-10 px-4">
+        <div className="container mx-auto mt-10 px-4 py-3">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold text-gray-800">Empower Your Blockchain Journey</h1>
-            <p className="text-lg text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-gray-800"> Leverage AI to automate DeFi tasks and create unique meme tokens effortlessly.</h1>
+            {/* <p className="text-lg text-gray-600 mt-2">
               Leverage AI to automate DeFi tasks and create unique meme tokens effortlessly.
-            </p>
+            </p> */}
           </div>
   
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -91,10 +91,10 @@ function MainPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-gray-700">
-                    5. Transfer native token to AI Agent
+                    5. Topup native token to AI Agent
                   </h3>
                   <button className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
-                    Transfer 0.001 ETH
+                    Topup 0.001 ETH
                   </button>
                 </div>
               </div>

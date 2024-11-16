@@ -20,9 +20,11 @@ import { baseSepolia, polygon } from './constants';
 import './index.css'
 
 import Main from "./pages/Main";
-import AI from "./pages/Ai";
+import AI from "./pages/AI";
 import Portfolio from "./pages/Portfolio";
 import Chat from "./pages/Chat";
+
+import { WalletProvider } from './hooks/Wallet';
 
 const queryClient = new QueryClient();
 
@@ -102,8 +104,10 @@ export default function App() {
    >
      <WagmiProvider config={config}>
        <QueryClientProvider client={queryClient}>
-           <Toaster/>
-           <RouterProvider router={router} />
+          <WalletProvider>
+            <Toaster/>
+            <RouterProvider router={router} />
+          </WalletProvider>
        </QueryClientProvider>
      </WagmiProvider> 
    </DynamicContextProvider>
