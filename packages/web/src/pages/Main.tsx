@@ -1,24 +1,132 @@
 function Main() {
-    
     return (
-      <>
-        <div>
-            <nav className="w-full bg-slate-500 p-4 h-[5vw]">
-                <div className="float-right">
-                    <w3m-button />
-                </div>
-            </nav>
-            <div className="flex flex-col items-center justify-center mt-5">
-                <h1 className="text-2xl">On-chain AI Agent Platform</h1>
-                <p className="text-lg mt-5">1. Create your first vault</p>
-                <button>Create Wallet</button>
-                <p className="text-lg mt-5">2. Create your AI Agent Assitance that will manage on-chain task for you</p>
-                <button>Create Agent</button>
-                <p className="text-lg mt-5">3. Grant Permission AI Agent to your Vault</p>
+      <div className="min-h-screen bg-gray-100">
+        {/* Navigation */}
+        <nav className="w-full bg-slate-700 p-4">
+          <div className="container mx-auto flex justify-between items-center">
+            <h1 className="text-white text-lg font-semibold">On-chain AI Agent Platform</h1>
+            <div>
+              <w3m-button />
             </div>
-        </div>
-      </>
-    )
-  }
+          </div>
+        </nav>
   
-  export default Main
+        {/* Main Content */}
+        <div className="container mx-auto mt-10 px-4">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-bold text-gray-800">Empower Your Blockchain Journey</h1>
+            <p className="text-lg text-gray-600 mt-2">
+              Leverage AI to automate DeFi tasks and create unique meme tokens effortlessly.
+            </p>
+          </div>
+  
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* DeFi Section */}
+            <div className="bg-white p-6 shadow-lg rounded-lg">
+              <h2 className="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">DeFi Automation</h2>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">1. Create your first vault</h3>
+                  <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Create Vault
+                  </button>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">2. Deposit in vault</h3>
+                  <div className="flex mt-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter amount"
+                      className="flex-1 p-2 border border-gray-300 rounded"
+                    />
+                    <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                      Deposit USDC
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">
+                    3. Create your AI Agent Assistance
+                  </h3>
+                  <div className="flex mt-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter Agent Name"
+                      className="flex-1 p-2 border border-gray-300 rounded"
+                    />
+                    <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                      Create Agent
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">
+                    4. Grant Permission to AI Agent
+                  </h3>
+                  <div className="flex gap-4 mt-2">
+                    <button className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                      Grant Permission
+                    </button>
+                    <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                      Revoke Permission
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">
+                    5. Transfer native token to AI Agent
+                  </h3>
+                  <button className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                    Transfer 0.001 ETH
+                  </button>
+                </div>
+              </div>
+            </div>
+  
+            {/* AI x Meme Section */}
+            <div className="bg-white p-6 shadow-lg rounded-lg">
+              <h2 className="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">AI x Meme Creation</h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-700">1. Create your AI x Meme token</h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    <input
+                      type="text"
+                      placeholder="Enter token name"
+                      className="p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter token symbol"
+                      className="p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter token supply"
+                      className="p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter AI agent name"
+                      className="p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter AI agent instruction"
+                      className="p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                  <button className="mt-4 px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
+                    Create Token
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+}
+  
+export default Main;
+  
