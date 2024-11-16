@@ -11,13 +11,6 @@ def read_root():
 
 
 # --- API Models ---
-class TokenRequest(BaseModel):
-    agent_id: str
-    name: str
-    symbol: str
-    initial_supply: int
-
-
 class TransferRequest(BaseModel):
     amount: float
     asset_id: str
@@ -55,12 +48,6 @@ async def api_create_token(request: CreateTokenRequest):
             initial_supply=request.initial_supply,
         )
         return {"message": result}
-    except InvalidId:
-        raise HTTPException(status_code=400, detail="Invalid agent ID format.")
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=f"Token creation failed: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 

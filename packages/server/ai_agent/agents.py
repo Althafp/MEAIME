@@ -20,10 +20,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB connection setup
-MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+MONGODB_URL = os.getenv("MONGODB_URL")
 # Get configuration from environment variables
-API_KEY_NAME = os.environ.get("CDP_API_KEY_NAME", "")
-PRIVATE_KEY = os.environ.get("CDP_PRIVATE_KEY", "").replace('\\n', '\n')
+API_KEY_NAME = os.environ.get("CDP_API_KEY_NAME")
+PRIVATE_KEY = os.environ.get("CDP_PRIVATE_KEY").replace('\\n', '\n')
 
 # MongoDB connection setup
 client = AsyncIOMotorClient(MONGODB_URL)
