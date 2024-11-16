@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DynamicContextProvider,
-  DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
-import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import {
-  createConfig,
   WagmiProvider,
 } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { http } from 'viem';
 // import { baseSepolia, polygon } from 'viem/chains';
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
@@ -20,6 +16,13 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 
 import { baseSepolia, polygon } from './constants';
+
+import './index.css'
+
+import Main from "./pages/Main";
+import AI from "./pages/Ai";
+import Portfolio from "./pages/Portfolio";
+import Chat from "./pages/Chat";
 
 const queryClient = new QueryClient();
 
@@ -51,11 +54,6 @@ createWeb3Modal({
   projectId,
   enableAnalytics: true // Optional - defaults to your Cloud configuration
 })
-  
-import './index.css'
-
-import Main from "./pages/Main";
-import Dashboard from "./pages/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -67,10 +65,26 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/dashboard",
+    path: "/ai",
     element: (
       <>
-        <Dashboard />
+        <AI />
+      </>
+    ),
+  },
+  {
+    path: "/portfolio",
+    element: (
+      <>
+        <Portfolio />
+      </>
+    ),
+  },
+  {
+    path: "/chat/:agentId",
+    element: (
+      <>
+        <Chat />
       </>
     ),
   },

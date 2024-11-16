@@ -1,10 +1,27 @@
-function Main() {
+function MainPage() {
     return (
       <div className="min-h-screen bg-gray-100">
         {/* Navigation */}
         <nav className="w-full bg-slate-700 p-4">
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-white text-lg font-semibold">On-chain AI Agent Platform</h1>
+            <ul className="flex gap-4">
+                <li>
+                    <a href="/" className="text-white hover:underline">
+                    Home
+                    </a>
+                </li>
+                <li>
+                    <a href="/ai" className="text-white hover:underline">
+                    AIs
+                    </a>
+                </li>
+                <li>
+                    <a href="/portfolio" className="text-white hover:underline">
+                    Portfolio
+                    </a>
+                </li>
+            </ul>
             <div>
               <w3m-button />
             </div>
@@ -110,14 +127,13 @@ function Main() {
                       placeholder="Enter AI agent name"
                       className="p-2 border border-gray-300 rounded"
                     />
-                    <input
-                      type="text"
+                    <textarea
                       placeholder="Enter AI agent instruction"
                       className="p-2 border border-gray-300 rounded"
                     />
                   </div>
                   <button className="mt-4 px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
-                    Create Token
+                    Create AI Agent & Token
                   </button>
                 </div>
               </div>
@@ -128,5 +144,5 @@ function Main() {
     );
 }
   
-export default Main;
+export default MainPage;
   
