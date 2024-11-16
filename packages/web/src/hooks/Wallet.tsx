@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from "react";
 
 import { useAccount } from "wagmi";
-import { createWalletClient, publicActions, custom } from "viem";
+import { createWalletClient, publicActions, custom, parseEther } from "viem";
 import toast from 'react-hot-toast';
 
 import { baseSepolia } from "../constants";
@@ -17,7 +17,7 @@ export const WalletProvider = ({
 }: {
   children: ReactNode;
 }) => {
-    const [tokenId, setTokenId] = useState<number>(0);
+    // const [tokenId, setTokenId] = useState<number>(0);
 
     const { address, isConnected, isConnecting, isReconnecting } = useAccount();
 
@@ -151,8 +151,29 @@ export const WalletProvider = ({
         }
     }
 
+    const topup = async (toAddress: `0x${string}`, amount: string) => {
+        const loading1 = toast.loading('Topup...');
+
+        try {
+            const txn = await publicClient.sendTransaction({
+                to: toAddress,
+                value: parseEther(amount),
+                account: address as `0x${string}`
+            });
+            const result = await publicClient.waitForTransactionReceipt({ hash: txn });
+    
+            if (result.status === "success") {
+                toast.success('Transaction success');
+            }
+        } catch(error: any) {
+            toast.error('Create Vault error: ', error);
+        } finally {
+            toast.dismiss(loading1);
+        }
+    }
+
   return (
-    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke }} {...rest}>
+    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke, topup }} {...rest}>
       {children}
     </WalletContext.Provider>
   );

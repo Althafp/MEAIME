@@ -1,4 +1,11 @@
+import { useEffect, useState } from 'react';
+
+
+import { useWallet } from '../hooks/useWallet';
+
 function MainPage() {
+    const { dailyCheckIn, doRaffle, doCraft } = useWallet();
+
     return (
       <div className="min-h-screen bg-gray-100">
         {/* Navigation */}
