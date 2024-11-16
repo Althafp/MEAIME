@@ -13,7 +13,4 @@
       "jsx": "react"
     },
     "exclude": ["node_modules", "dist"],
-    "paths": {
-      "contracts": ["../contracts"]
-    }
 }
