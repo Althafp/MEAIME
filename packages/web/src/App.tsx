@@ -10,7 +10,7 @@ import {
 } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { http } from 'viem';
-import { baseSepolia, polygon } from 'viem/chains';
+// import { baseSepolia, polygon } from 'viem/chains';
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -19,7 +19,7 @@ import { Toaster } from "react-hot-toast";
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 
-import { customChain } from './constants';
+import { baseSepolia, polygon } from './constants';
 
 const queryClient = new QueryClient();
 
@@ -39,7 +39,7 @@ const config = defaultWagmiConfig({
   metadata,
   auth: {
     email: true, // default to true
-    socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
+    socials: ['google'],
     showWallets: true, // default to true
     walletFeatures: true // default to true
   }
