@@ -84,9 +84,9 @@ async def create_agent(name: str, instructions: str) -> dict:
     print(wallet_dict)
 
     # Request funds from the faucet (only works on testnet)
-    faucet = agent_wallet.faucet()
-    print(f"Faucet transaction: {faucet}")
-    print(f"Agent wallet address: {agent_wallet.default_address.address_id}")
+    # faucet = agent_wallet.faucet()
+    # print(f"Faucet transaction: {faucet}")
+    # print(f"Agent wallet address: {agent_wallet.default_address.address_id}")
 
     agent_data = {
         "name": name,
@@ -129,7 +129,9 @@ async def create_token(agent_id: str, name: str, symbol: str, initial_supply: in
         raise ValueError("Wallet data not found for the agent.")
 
     # Import the wallet
-    agent_wallet = Wallet.import_data(wallet_data)
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
+
+    print(agent_wallet)
 
     # Deploy the ERC-20 token
     try:
