@@ -21,3 +21,4 @@
 /poetry.toml
 
 node_modules
+packages/contract/ai-vault/lib/forge-std/
