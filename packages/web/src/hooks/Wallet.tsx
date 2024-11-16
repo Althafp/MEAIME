@@ -9,6 +9,7 @@ import { baseSepolia } from "../constants";
 import { WalletContext } from '../contexts/wallet';
 import { VaultFactoryAbi } from '../abis/VaultFactory';
 import { BaseVaultAbi } from '../abis/BaseVault';
+import { TokenAbi } from '../abis/Token';
 import { VaultFactory, USDC } from "../env";
 
 export const WalletProvider = ({
@@ -51,23 +52,34 @@ export const WalletProvider = ({
         }
     };
 
-    const deposit = async (amount: bigint) => {
+    const deposit = async (amount: number) => {
         const loading1 = toast.loading('Deposit...');
 
         try {
-            const { request } = await publicClient.simulateContract({
-                account: address,
-                address: VaultFactory,
-                abi: BaseVaultAbi,
-                functionName: 'deposit',
-                args: [amount, address as `0x${string}`],
+            const txn = await publicClient.writeContract({
+                account: address as `0x${string}`,
+                address: USDC,
+                abi: TokenAbi,
+                functionName: 'approve',
+                args: [VaultFactory, BigInt(amount*10**6)] // USDC has 6 decimals
             });
-
-            const txn = await publicClient.writeContract(request);
             const result = await publicClient.waitForTransactionReceipt({ hash: txn });
-    
+
             if (result.status === "success") {
-                toast.success('Transaction success');
+                const { request } = await publicClient.simulateContract({
+                    account: address,
+                    address: VaultFactory,
+                    abi: BaseVaultAbi,
+                    functionName: 'deposit',
+                    args: [BigInt(amount*10**6), address as `0x${string}`],  // USDC has 6 decimals
+                });
+
+                const txn = await publicClient.writeContract(request);
+                const result = await publicClient.waitForTransactionReceipt({ hash: txn });
+        
+                if (result.status === "success") {
+                    toast.success('Transaction success');
+                }
             }
         } catch(error: any) {
             toast.error('Create Vault error: ', error);
@@ -151,13 +163,13 @@ export const WalletProvider = ({
         }
     }
 
-    const topup = async (toAddress: `0x${string}`, amount: string) => {
+    const topup = async (toAddress: `0x${string}`, amount: number) => {
         const loading1 = toast.loading('Topup...');
 
         try {
             const txn = await publicClient.sendTransaction({
                 to: toAddress,
-                value: parseEther(amount),
+                value: BigInt(amount*10**18),
                 account: address as `0x${string}`
             });
             const result = await publicClient.waitForTransactionReceipt({ hash: txn });
