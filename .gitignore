@@ -19,3 +19,5 @@
 
 .venv
 /poetry.toml
+
+node_modules
