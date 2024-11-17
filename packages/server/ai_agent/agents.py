@@ -81,22 +81,21 @@ async def create_agent(name: str, instructions: str) -> dict:
     
     wallet_data = agent_wallet.export_data()
     wallet_dict = wallet_data.to_dict()
-    print(wallet_dict)
+    # print(wallet_dict)
 
     # Request funds from the faucet (only works on testnet)
     # faucet = agent_wallet.faucet()
     # print(f"Faucet transaction: {faucet}")
     # print(f"Agent wallet address: {agent_wallet.default_address.address_id}")
-
     agent_data = {
         "name": name,
         "instructions": instructions,
-        "wallet": wallet_dict
+        "wallet": agent_wallet.default_address.address_id
     }
     # Save to MongoDB
     result = await agent_collection.insert_one(agent_data)
     agent_data["_id"] = str(result.inserted_id)  # Convert ObjectId to string
-    return agent_data["_id"]
+    return agent_data
 
 
 # Function to create a new ERC-20 token

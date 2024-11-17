@@ -1,14 +1,30 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from ai_agent.agents import create_token, transfer_asset, get_balance, deploy_nft, mint_nft, create_agent
 
 # Initialize FastAPI app
 app = FastAPI()
 
+# Define the allowed origins
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",  # Example: frontend running on localhost
+    "https://yourdomain.com",  # Replace with your domain
+]
+
+# Add CORSMiddleware to your FastAPI app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allow specific origins
+    allow_credentials=True,  # Allow credentials (cookies, Authorization headers, etc.)
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all HTTP headers
+)
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Based Agent API"}
-
 
 # --- API Models ---
 class TransferRequest(BaseModel):
@@ -16,12 +32,10 @@ class TransferRequest(BaseModel):
     asset_id: str
     destination_address: str
 
-
 class NFTRequest(BaseModel):
     name: str
     symbol: str
     base_uri: str
-
 
 class MintRequest(BaseModel):
     contract_address: str
