@@ -565,7 +565,7 @@ async def register_ens_domain(agent_id:str, domain: str, owner: str, duration: i
     
 
 # Function to register a basename
-async def interact_vault(basename: str, amount: float = 0.002):
+async def interact_vault(agent_id:str, basename: str, amount: float = 0.002):
     """
     Register a basename for the agent's wallet.
     
