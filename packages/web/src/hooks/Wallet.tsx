@@ -46,6 +46,7 @@ export const WalletProvider = ({
                 toast.success('Transaction success');
             }
         } catch(error: any) {
+            console.error('Create Vault error: ', error);
             toast.error('Create Vault error: ', error);
         } finally {
             toast.dismiss(loading1);

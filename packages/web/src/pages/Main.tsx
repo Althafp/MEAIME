@@ -1,10 +1,24 @@
 import { useEffect, useState } from 'react';
 
-
 import { useWallet } from '../hooks/useWallet';
+import { createAgent } from '../services/ai-agent';
 
 function MainPage() {
-    const { dailyCheckIn, doRaffle, doCraft } = useWallet();
+    const { createVault, deposit, withdraw, grant, revoke, topup } = useWallet();
+
+    const [vault, setVault] = useState(null);
+    const [amount, setAmount] = useState<number>(0);
+    const [, setAgent] = useState(null);
+    const [agentAddress, setAgentAddress] = useState<string>('');
+
+    const handleCreateAgent = async () => {
+        const name = "DeFi AI Agent";
+        const instructions = "Automate DeFi tasks";
+        const response = await createAgent(name, instructions);
+        console.log(response);
+        setAgent(response);
+        setAgentAddress(response.agent.wallet);
+    }
 
     return (
       <div className="min-h-screen bg-gray-100">
@@ -51,7 +65,7 @@ function MainPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-medium text-gray-700">1. Create your first vault</h3>
-                  <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                  <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => createVault()}>
                     Create Vault
                   </button>
                 </div>
@@ -62,8 +76,9 @@ function MainPage() {
                       type="text"
                       placeholder="Enter amount"
                       className="flex-1 p-2 border border-gray-300 rounded"
+                      onChange={(e) => setAmount(Number(e.target.value))}
                     />
-                    <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onClick={() => deposit(amount)}>
                       Deposit USDC
                     </button>
                   </div>
@@ -78,7 +93,7 @@ function MainPage() {
                       placeholder="Enter Agent Name"
                       className="flex-1 p-2 border border-gray-300 rounded"
                     />
-                    <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                    <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={(() => handleCreateAgent())}>
                       Create Agent
                     </button>
                   </div>
@@ -88,10 +103,10 @@ function MainPage() {
                     4. Grant Permission to AI Agent
                   </h3>
                   <div className="flex gap-4 mt-2">
-                    <button className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                    <button className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700" onClick={() => grant(agentAddress)}>
                       Grant Permission
                     </button>
-                    <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                    <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" disabled>
                       Revoke Permission
                     </button>
                   </div>
@@ -100,7 +115,7 @@ function MainPage() {
                   <h3 className="text-lg font-medium text-gray-700">
                     5. Topup native token to AI Agent
                   </h3>
-                  <button className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                  <button className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700" onClick={() => topup(agentAddress)}>
                     Topup 0.001 ETH
                   </button>
                 </div>
