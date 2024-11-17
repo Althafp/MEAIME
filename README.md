@@ -9,6 +9,6 @@
 3.1 Fast API + AI Agent with CDP and LLM
 
 ### Screenshots:
-![SS1](/1.png "ss1")
-![SS2](/2.png "ss2")
-![SS3](/3.png "ss3")
+![SS1](/3.png "ss1")
+![SS2](/1.png "ss2")
+![SS3](/2.png "ss3")
