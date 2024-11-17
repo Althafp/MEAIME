@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from "react";
 
 import { useAccount } from "wagmi";
-import { createWalletClient, publicActions, custom, parseEther } from "viem";
+import { createWalletClient, publicActions, custom, parseEther, decodeEventLog } from "viem";
 import toast from 'react-hot-toast';
 
 import { baseSepolia } from "../constants";
@@ -19,6 +19,7 @@ export const WalletProvider = ({
   children: ReactNode;
 }) => {
     // const [tokenId, setTokenId] = useState<number>(0);
+    const [vaultAddress, setVaultAddress] = useState<string>('');
 
     const { address, isConnected, isConnecting, isReconnecting } = useAccount();
 
@@ -44,6 +45,25 @@ export const WalletProvider = ({
     
             if (result.status === "success") {
                 toast.success('Transaction success');
+
+                const logs = result.logs;
+                for (const log of logs) {
+                    try {
+                        const decodedLog = decodeEventLog({
+                            abi: VaultFactoryAbi,
+                            eventName: 'VaultCreated',
+                            data: log.data,
+                            topics: log.topics,
+                        });
+
+                        if (decodedLog.args.owner === address) {
+                            setVaultAddress(decodedLog.args.vaultAddress);
+                            console.log('New Vault Address:', decodedLog.args.vaultAddress);
+                        }
+                    } catch (err) {
+                    console.error('Error decoding log:', err);
+                    }
+                }
             }
         } catch(error: any) {
             console.error('Create Vault error: ', error);
@@ -62,14 +82,14 @@ export const WalletProvider = ({
                 address: USDC,
                 abi: TokenAbi,
                 functionName: 'approve',
-                args: [VaultFactory, BigInt(amount*10**6)] // USDC has 6 decimals
+                args: [vaultAddress as `0x${string}`, BigInt(amount*10**6)] // USDC has 6 decimals
             });
             const result = await publicClient.waitForTransactionReceipt({ hash: txn });
 
             if (result.status === "success") {
                 const { request } = await publicClient.simulateContract({
                     account: address,
-                    address: VaultFactory,
+                    address: vaultAddress as `0x${string}`,
                     abi: BaseVaultAbi,
                     functionName: 'deposit',
                     args: [BigInt(amount*10**6), address as `0x${string}`],  // USDC has 6 decimals
@@ -83,7 +103,8 @@ export const WalletProvider = ({
                 }
             }
         } catch(error: any) {
-            toast.error('Create Vault error: ', error);
+            console.error('Deposit error: ', error);
+            toast.error('Deposit error: ', error);
         } finally {
             toast.dismiss(loading1);
         }
@@ -95,7 +116,7 @@ export const WalletProvider = ({
         try {
             const { request } = await publicClient.simulateContract({
                 account: address,
-                address: VaultFactory,
+                address: vaultAddress as `0x${string}`,
                 abi: BaseVaultAbi,
                 functionName: 'withdraw',
                 args: [amount, address as `0x${string}`, address as `0x${string}`],
@@ -120,7 +141,7 @@ export const WalletProvider = ({
         try {
             const { request } = await publicClient.simulateContract({
                 account: address,
-                address: VaultFactory,
+                address: vaultAddress as `0x${string}`,
                 abi: BaseVaultAbi,
                 functionName: 'assignFundManager',
                 args: [agent],
@@ -145,7 +166,7 @@ export const WalletProvider = ({
         try {
             const { request } = await publicClient.simulateContract({
                 account: address,
-                address: VaultFactory,
+                address: vaultAddress as `0x${string}`,
                 abi: BaseVaultAbi,
                 functionName: 'revokeFundManager',
                 args: [],
@@ -186,7 +207,7 @@ export const WalletProvider = ({
     }
 
   return (
-    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke, topup }} {...rest}>
+    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke, topup, vaultAddress }} {...rest}>
       {children}
     </WalletContext.Provider>
   );

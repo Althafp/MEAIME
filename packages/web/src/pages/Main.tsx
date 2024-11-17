@@ -4,9 +4,9 @@ import { useWallet } from '../hooks/useWallet';
 import { createAgent } from '../services/ai-agent';
 
 function MainPage() {
-    const { createVault, deposit, withdraw, grant, revoke, topup } = useWallet();
+    const { createVault, deposit, withdraw, grant, revoke, topup, vaultAddress } = useWallet();
 
-    const [vault, setVault] = useState(null);
+    const [vault, setVault] = useState<string>('');
     const [amount, setAmount] = useState<number>(0);
     const [, setAgent] = useState(null);
     const [agentAddress, setAgentAddress] = useState<string>('');
@@ -19,6 +19,10 @@ function MainPage() {
         setAgent(response);
         setAgentAddress(response.agent.wallet);
     }
+
+    useEffect(() => {
+        setVault(vaultAddress);
+    }, [vaultAddress]);
 
     return (
       <div className="min-h-screen bg-gray-100">
@@ -65,9 +69,21 @@ function MainPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-medium text-gray-700">1. Create your first vault</h3>
-                  <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => createVault()}>
-                    Create Vault
-                  </button>
+                  {vault.length === 0 || vaultAddress.length === 0 ? (
+                    <button
+                        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        onClick={() => createVault()}
+                    >
+                        Create Vault
+                    </button>
+                    ) : (
+                    <button
+                        className="mt-2 px-4 py-2 bg-gray-400 text-white rounded"
+                        disabled
+                    >
+                        Vault Created
+                    </button>
+                )}
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-gray-700">2. Deposit in vault</h3>
