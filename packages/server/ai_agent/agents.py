@@ -13,6 +13,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from bson.errors import InvalidId
+import time
 
 from dotenv import load_dotenv
 
@@ -400,6 +401,7 @@ BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_MAINNET = "0x4cCb0BB02FCABA27e82a56646E81
 BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_TESTNET = "0x49aE3cC2e3AA768B1e5654f5D3C6002144A59581"
 L2_RESOLVER_ADDRESS_MAINNET = "0xC6d566A56A1aFf6508b41f6c90ff131615583BCD"
 L2_RESOLVER_ADDRESS_TESTNET = "0x6533C94869D28fAA8dF77cc63f9e2b2D6Cf77eBA"
+ENS_REGISTRAR_CONTROLLER_ADDRESS = ""
 
 
 # Function to create registration arguments for Basenames
@@ -518,6 +520,7 @@ async def register_ens_domain(agent_id:str, domain: str, owner: str, duration: i
     Returns:
         str: Status message about the ENS domain registration.
     """
+    COMMITMENT_WAIT_TIME = 60  # Minimum wait time in seconds
     try:
         commitment = generate_commitment(domain, owner, secret)
 
