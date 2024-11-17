@@ -14,11 +14,14 @@
 1.2 pnpm dev
 2. contract/ai-vault
 1.1 forge install
-1.2 forge script script/Deploy.s.sol:Deploy --rpc-url https://sepolia.base.org --broadcast
-1.2 forge script script/Deploy.s.sol:Deploy --rpc-url https://rpc-amoy.polygon.technology --broadcast
+1.2 cp .env.example .env and replace with your private key
+1.3 forge script script/Deploy.s.sol:Deploy --rpc-url https://sepolia.base.org --broadcast
+1.4 forge script script/Deploy.s.sol:Deploy --rpc-url https://rpc-amoy.polygon.technology --broadcast
 3. server
-1.1 poetry install
-1.2 poetry run uvicorn ai_agent.server:app --reload --host 0.0.0.0 --port 8001
+1.1 cp .env.example .env and replace with your config
+1.2 export OPENAI_API_KEY=<YOUR_OPENAI_KEY>
+1.3 poetry install
+1.4 poetry run uvicorn ai_agent.server:app --reload --host 0.0.0.0 --port 8001
 
 ### Note
 - now, platfrom ai now fully intgrate Frontend, Backend, and Smart Contract cause of time limit, can test it seperately for CDP & LLM can run&test via API, from FE side now can create USDC Vault and AI agent
