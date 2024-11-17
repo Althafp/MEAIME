@@ -8,6 +8,18 @@
 3. package/server
 3.1 Fast API + AI Agent with CDP and LLM
 
+
+### How to run
+1. web
+1.1 pnpm i
+1.2 pnpm dev
+2. contract/ai-vault
+1.1 forge install
+1.2 forge script script/Deploy.s.sol:Deploy --rpc-url https://sepolia.base.org --broadcast
+3. server
+1.1 poetry install
+1.2 poetry run uvicorn ai_agent.server:app --reload --host 0.0.0.0 --port 8001
+
 ### Screenshots:
 ![SS1](/3.png "ss1")
 ![SS2](/1.png "ss2")
