@@ -98,6 +98,34 @@ async def create_agent(name: str, instructions: str) -> dict:
     return agent_data
 
 
+
+async def get_agent(agent_id: str) -> dict:
+    """
+    Retrieve agent details from the database.
+
+    Args:
+        agent_id (str): The ID of the agent.
+
+    Returns:
+        dict: The agent data, including wallet information.
+
+    Raises:
+        ValueError: If the agent ID is invalid or the agent is not found.
+    """
+    # Convert agent_id to ObjectId
+    try:
+        agent_id = ObjectId(agent_id)
+    except InvalidId:
+        raise ValueError("Invalid agent ID format.")
+
+    # Retrieve agent data from MongoDB
+    agent_data = await agent_collection.find_one({"_id": agent_id})
+    if not agent_data:
+        raise ValueError(f"Agent with ID {agent_id} not found.")
+
+    return agent_data
+
+
 # Function to create a new ERC-20 token
 async def create_token(agent_id: str, name: str, symbol: str, initial_supply: int) -> str:
     """
@@ -112,16 +140,8 @@ async def create_token(agent_id: str, name: str, symbol: str, initial_supply: in
     Returns:
         str: A message confirming the token creation with details.
     """
-    # Convert agent_id to ObjectId
-    try:
-        agent_id = ObjectId(agent_id)
-    except InvalidId:
-        raise ValueError("Invalid agent ID format.")
-
-    # Load the wallet from MongoDB
-    agent_data = await agent_collection.find_one({"_id": agent_id})
-    if not agent_data:
-        raise ValueError(f"Agent with ID {agent_id} not found.")
+    # Get agent details
+    agent_data = await get_agent(agent_id)
 
     wallet_data = agent_data.get("wallet")
     if not wallet_data:
@@ -129,8 +149,6 @@ async def create_token(agent_id: str, name: str, symbol: str, initial_supply: in
 
     # Import the wallet
     agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
-
-    print(agent_wallet)
 
     # Deploy the ERC-20 token
     try:
@@ -145,7 +163,7 @@ async def create_token(agent_id: str, name: str, symbol: str, initial_supply: in
     )
 
 # Function to transfer assets
-def transfer_asset(amount, asset_id, destination_address):
+async def transfer_asset(amount, asset_id, destination_address):
     """
     Transfer an asset to a specific address.
     
@@ -158,6 +176,15 @@ def transfer_asset(amount, asset_id, destination_address):
         str: A message confirming the transfer or describing an error
     """
     try:
+        # Get agent details
+        agent_data = await get_agent(agent_id)
+
+        wallet_data = agent_data.get("wallet")
+        if not wallet_data:
+            raise ValueError("Wallet data not found for the agent.")
+
+        # Import the wallet
+        agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
         # Check if we're on Base Mainnet and the asset is USDC for gasless transfer
         is_mainnet = agent_wallet.network_id == "base-mainnet"
         is_usdc = asset_id.lower() == "usdc"
@@ -190,7 +217,7 @@ def transfer_asset(amount, asset_id, destination_address):
 
 
 # Function to get the balance of a specific asset
-def get_balance(asset_id):
+async def get_balance(asset_id):
     """
     Get the balance of a specific asset in the agent's wallet.
     
@@ -200,18 +227,36 @@ def get_balance(asset_id):
     Returns:
         str: A message showing the current balance of the specified asset
     """
+    # Get agent details
+    agent_data = await get_agent(agent_id)
+
+    wallet_data = agent_data.get("wallet")
+    if not wallet_data:
+        raise ValueError("Wallet data not found for the agent.")
+
+    # Import the wallet
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
     balance = agent_wallet.balance(asset_id)
     return f"Current balance of {asset_id}: {balance}"
 
 
 # Function to request ETH from the faucet (testnet only)
-def request_eth_from_faucet():
+async def request_eth_from_faucet():
     """
     Request ETH from the Base Sepolia testnet faucet.
     
     Returns:
         str: Status message about the faucet request
     """
+    # Get agent details
+    agent_data = await get_agent(agent_id)
+
+    wallet_data = agent_data.get("wallet")
+    if not wallet_data:
+        raise ValueError("Wallet data not found for the agent.")
+
+    # Import the wallet
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
     if agent_wallet.network_id == "base-mainnet":
         return "Error: The faucet is only available on Base Sepolia testnet."
 
@@ -248,7 +293,7 @@ def generate_art(prompt):
 
 
 # Function to deploy an ERC-721 NFT contract
-def deploy_nft(name, symbol, base_uri):
+async def deploy_nft(name, symbol, base_uri):
     """
     Deploy an ERC-721 NFT contract.
     
@@ -261,6 +306,15 @@ def deploy_nft(name, symbol, base_uri):
         str: Status message about the NFT deployment, including the contract address
     """
     try:
+        # Get agent details
+        agent_data = await get_agent(agent_id)
+
+        wallet_data = agent_data.get("wallet")
+        if not wallet_data:
+            raise ValueError("Wallet data not found for the agent.")
+
+        # Import the wallet
+        agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
         deployed_nft = agent_wallet.deploy_nft(name, symbol, base_uri)
         deployed_nft.wait()
         contract_address = deployed_nft.contract_address
@@ -272,7 +326,7 @@ def deploy_nft(name, symbol, base_uri):
 
 
 # Function to mint an NFT
-def mint_nft(contract_address, mint_to):
+async def mint_nft(contract_address, mint_to):
     """
     Mint an NFT to a specified address.
     
@@ -284,6 +338,15 @@ def mint_nft(contract_address, mint_to):
         str: Status message about the NFT minting
     """
     try:
+        # Get agent details
+        agent_data = await get_agent(agent_id)
+
+        wallet_data = agent_data.get("wallet")
+        if not wallet_data:
+            raise ValueError("Wallet data not found for the agent.")
+
+        # Import the wallet
+        agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
         mint_args = {"to": mint_to, "quantity": "1"}
 
         mint_invocation = agent_wallet.invoke_contract(
@@ -297,7 +360,7 @@ def mint_nft(contract_address, mint_to):
 
 
 # Function to swap assets (only works on Base Mainnet)
-def swap_assets(amount: Union[int, float, Decimal], from_asset_id: str,
+async def swap_assets(amount: Union[int, float, Decimal], from_asset_id: str,
                 to_asset_id: str):
     """
     Swap one asset for another using the trade function.
@@ -311,6 +374,16 @@ def swap_assets(amount: Union[int, float, Decimal], from_asset_id: str,
     Returns:
         str: Status message about the swap
     """
+    # Get agent details
+    agent_data = await get_agent(agent_id)
+
+    wallet_data = agent_data.get("wallet")
+    if not wallet_data:
+        raise ValueError("Wallet data not found for the agent.")
+
+    # Import the wallet
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
+
     if agent_wallet.network_id != "base-mainnet":
         return "Error: Asset swaps are only available on Base Mainnet. Current network is not Base Mainnet."
 
@@ -372,7 +445,7 @@ def create_register_contract_method_args(base_name: str, address_id: str,
 
 
 # Function to register a basename
-def register_basename(basename: str, amount: float = 0.002):
+async def register_basename(basename: str, amount: float = 0.002):
     """
     Register a basename for the agent's wallet.
     
@@ -383,6 +456,134 @@ def register_basename(basename: str, amount: float = 0.002):
     Returns:
         str: Status message about the basename registration
     """
+    # Get agent details
+    agent_data = await get_agent(agent_id)
+
+    wallet_data = agent_data.get("wallet")
+    if not wallet_data:
+        raise ValueError("Wallet data not found for the agent.")
+
+    # Import the wallet
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
+
+    address_id = agent_wallet.default_address.address_id
+    is_mainnet = agent_wallet.network_id == "base-mainnet"
+
+    suffix = ".base.eth" if is_mainnet else ".basetest.eth"
+    if not basename.endswith(suffix):
+        basename += suffix
+
+    register_args = create_register_contract_method_args(
+        basename, address_id, is_mainnet)
+
+    try:
+        contract_address = (BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_MAINNET
+                            if is_mainnet else
+                            BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_TESTNET)
+
+        invocation = agent_wallet.invoke_contract(
+            contract_address=contract_address,
+            method="register",
+            args=register_args,
+            abi=registrar_abi,
+            amount=amount,
+            asset_id="eth",
+        )
+        invocation.wait()
+        return f"Successfully registered basename {basename} for address {address_id}"
+    except ContractLogicError as e:
+        return f"Error registering basename: {str(e)}"
+    except Exception as e:
+        return f"Unexpected error registering basename: {str(e)}"
+    
+
+def generate_commitment(name, owner, secret):
+    return web3.solidityKeccak(
+        ["string", "address", "bytes32"],
+        [name, owner, secret]
+)
+    
+
+async def register_ens_domain(domain: str, owner: str, duration: int, secret: str, amount: float):
+    """
+    Register an ENS domain.
+
+    Args:
+        domain (str): The domain to register (e.g., "mydomain.eth")
+        owner (str): Address of the owner.
+        duration (int): Duration of the registration in seconds.
+        secret (str): A secret for commitment.
+        amount (float): Amount of ETH to pay for registration.
+
+    Returns:
+        str: Status message about the ENS domain registration.
+    """
+    try:
+        commitment = generate_commitment(domain, owner, secret)
+
+        # Get agent details
+        agent_data = await get_agent(agent_id)
+
+        wallet_data = agent_data.get("wallet")
+        if not wallet_data:
+            raise ValueError("Wallet data not found for the agent.")
+
+        # Import the wallet
+        agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
+
+        # Commit step
+        agent_wallet.invoke_contract(
+            contract_address=ENS_REGISTRAR_CONTROLLER_ADDRESS,
+            method="commit",
+            args=[commitment],
+            abi=commit_abi_ens,
+        )
+
+        # Wait for the commitment period (ENS-specific delay)
+        time.sleep(COMMITMENT_WAIT_TIME)
+
+        # Register step
+        args = create_register_contract_method_args(domain, owner, duration, secret)
+        invocation = agent_wallet.invoke_contract(
+            contract_address=ENS_REGISTRAR_CONTROLLER_ADDRESS,
+            method="register",
+            args=args,
+            abi=registrar_abi_ens,
+            amount=amount,
+            asset_id="eth",
+        )
+        invocation.wait()
+        return f"Successfully registered domain {domain} for owner {owner}"
+    except ContractLogicError as e:
+        return f"Error registering ENS domain: {str(e)}"
+    except Exception as e:
+        return f"Unexpected error registering ENS domain: {str(e)}"
+
+    
+
+# Function to register a basename
+async def interact_vault(basename: str, amount: float = 0.002):
+    """
+    Register a basename for the agent's wallet.
+    
+    Args:
+        basename (str): The basename to register (e.g. "myname.base.eth" or "myname.basetest.eth")
+        amount (float): Amount of ETH to pay for registration (default 0.002)
+    
+    Returns:
+        str: Status message about the basename registration
+    """
+
+    # Get agent details
+    agent_data = await get_agent(agent_id)
+
+    wallet_data = agent_data.get("wallet")
+    if not wallet_data:
+        raise ValueError("Wallet data not found for the agent.")
+
+    # Import the wallet
+    agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
+
     address_id = agent_wallet.default_address.address_id
     is_mainnet = agent_wallet.network_id == "base-mainnet"
 
@@ -428,7 +629,9 @@ based_agent = Agent(
         deploy_nft,
         mint_nft,
         swap_assets,
-        register_basename
+        register_basename,
+        register_ens_domain,
+        interact_vault
     ],
 )
 
@@ -512,40 +715,84 @@ registrar_abi = [{
     "function"
 }]
 
+commit_abi_ens = [
+    {
+        "inputs": [
+            { "internalType": "bytes32", "name": "commitment", "type": "bytes32" }
+        ],
+        "name": "commit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
+
+registrar_abi_ens = [
+    {
+        "inputs": [
+            { "internalType": "string", "name": "name", "type": "string" },
+            { "internalType": "address", "name": "owner", "type": "address" },
+            { "internalType": "uint256", "name": "duration", "type": "uint256" },
+            { "internalType": "bytes32", "name": "secret", "type": "bytes32" }
+        ],
+        "name": "register",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    }
+]
+
 vault_abi = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "token",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                "internalType": "address",
+                "name": "receiver",
+                "type": "address"
             }
         ],
         "name": "deposit",
-        "outputs": [],
-        "stateMutability": "payable",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "shares",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "shares",
+                "type": "uint256"
+            },
+            {
                 "internalType": "address",
-                "name": "token",
+                "name": "receiver",
                 "type": "address"
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
             }
         ],
         "name": "withdraw",
-        "outputs": [],
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     }
