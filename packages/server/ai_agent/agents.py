@@ -163,7 +163,7 @@ async def create_token(agent_id: str, name: str, symbol: str, initial_supply: in
     )
 
 # Function to transfer assets
-async def transfer_asset(amount, asset_id, destination_address):
+async def transfer_asset(agent_id, amount, asset_id, destination_address):
     """
     Transfer an asset to a specific address.
     
@@ -217,7 +217,7 @@ async def transfer_asset(amount, asset_id, destination_address):
 
 
 # Function to get the balance of a specific asset
-async def get_balance(asset_id):
+async def get_balance(agent_id, asset_id):
     """
     Get the balance of a specific asset in the agent's wallet.
     
@@ -241,7 +241,7 @@ async def get_balance(asset_id):
 
 
 # Function to request ETH from the faucet (testnet only)
-async def request_eth_from_faucet():
+async def request_eth_from_faucet(agent_id):
     """
     Request ETH from the Base Sepolia testnet faucet.
     
@@ -293,7 +293,7 @@ def generate_art(prompt):
 
 
 # Function to deploy an ERC-721 NFT contract
-async def deploy_nft(name, symbol, base_uri):
+async def deploy_nft(agent_id, name, symbol, base_uri):
     """
     Deploy an ERC-721 NFT contract.
     
@@ -326,7 +326,7 @@ async def deploy_nft(name, symbol, base_uri):
 
 
 # Function to mint an NFT
-async def mint_nft(contract_address, mint_to):
+async def mint_nft(agent_id, contract_address, mint_to):
     """
     Mint an NFT to a specified address.
     
@@ -360,7 +360,7 @@ async def mint_nft(contract_address, mint_to):
 
 
 # Function to swap assets (only works on Base Mainnet)
-async def swap_assets(amount: Union[int, float, Decimal], from_asset_id: str,
+async def swap_assets(agent_id: str, amount: Union[int, float, Decimal], from_asset_id: str,
                 to_asset_id: str):
     """
     Swap one asset for another using the trade function.
@@ -445,7 +445,7 @@ def create_register_contract_method_args(base_name: str, address_id: str,
 
 
 # Function to register a basename
-async def register_basename(basename: str, amount: float = 0.002):
+async def register_basename(agent_id: str, basename: str, amount: float = 0.002):
     """
     Register a basename for the agent's wallet.
     
@@ -504,7 +504,7 @@ def generate_commitment(name, owner, secret):
 )
     
 
-async def register_ens_domain(domain: str, owner: str, duration: int, secret: str, amount: float):
+async def register_ens_domain(agent_id:str, domain: str, owner: str, duration: int, secret: str, amount: float):
     """
     Register an ENS domain.
 
