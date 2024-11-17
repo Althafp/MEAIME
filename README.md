@@ -15,6 +15,7 @@
 2. contract/ai-vault
 1.1 forge install
 1.2 forge script script/Deploy.s.sol:Deploy --rpc-url https://sepolia.base.org --broadcast
+1.2 forge script script/Deploy.s.sol:Deploy --rpc-url https://rpc-amoy.polygon.technology --broadcast
 3. server
 1.1 poetry install
 1.2 poetry run uvicorn ai_agent.server:app --reload --host 0.0.0.0 --port 8001
