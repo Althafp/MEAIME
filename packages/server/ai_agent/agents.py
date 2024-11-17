@@ -565,18 +565,20 @@ async def register_ens_domain(agent_id:str, domain: str, owner: str, duration: i
     
 
 # Function to register a basename
-async def interact_vault(agent_id:str, basename: str, amount: float = 0.002):
+async def interact_vault(agent_id: str, vault_address: str, action: str, amount: float, receiver: str):
     """
-    Register a basename for the agent's wallet.
-    
-    Args:
-        basename (str): The basename to register (e.g. "myname.base.eth" or "myname.basetest.eth")
-        amount (float): Amount of ETH to pay for registration (default 0.002)
-    
-    Returns:
-        str: Status message about the basename registration
-    """
+    Interact with a vault contract (deposit or withdraw).
 
+    Args:
+        agent_id (str): ID of the agent.
+        vault_address (str): Address of the vault contract.
+        action (str): The action to perform ('deposit' or 'withdraw').
+        amount (float): Amount of assets (for deposit) or shares (for withdraw).
+        receiver (str): Address of the receiver.
+
+    Returns:
+        str: Status message about the vault interaction.
+    """
     # Get agent details
     agent_data = await get_agent(agent_id)
 
@@ -587,35 +589,35 @@ async def interact_vault(agent_id:str, basename: str, amount: float = 0.002):
     # Import the wallet
     agent_wallet = Wallet.import_data(WalletData(wallet_data.get("wallet_id"), wallet_data.get("seed")))
 
-    address_id = agent_wallet.default_address.address_id
-    is_mainnet = agent_wallet.network_id == "base-mainnet"
-
-    suffix = ".base.eth" if is_mainnet else ".basetest.eth"
-    if not basename.endswith(suffix):
-        basename += suffix
-
-    register_args = create_register_contract_method_args(
-        basename, address_id, is_mainnet)
-
     try:
-        contract_address = (BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_MAINNET
-                            if is_mainnet else
-                            BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_TESTNET)
+        if action == "deposit":
+            # Prepare arguments for deposit
+            vault_args = [amount, receiver]
+            invocation = agent_wallet.invoke_contract(
+                contract_address=vault_address,
+                method="deposit",
+                args=vault_args,
+                abi=vault_abi,
+            )
+        elif action == "withdraw":
+            # Prepare arguments for withdraw
+            owner = agent_wallet.default_address.address_id
+            vault_args = [amount, receiver, owner]
+            invocation = agent_wallet.invoke_contract(
+                contract_address=vault_address,
+                method="withdraw",
+                args=vault_args,
+                abi=vault_abi,
+            )
+        else:
+            return f"Invalid action '{action}'. Valid actions are 'deposit' or 'withdraw'."
 
-        invocation = agent_wallet.invoke_contract(
-            contract_address=contract_address,
-            method="register",
-            args=register_args,
-            abi=registrar_abi,
-            amount=amount,
-            asset_id="eth",
-        )
         invocation.wait()
-        return f"Successfully registered basename {basename} for address {address_id}"
+        return f"Successfully performed {action} of {amount} assets on the vault for receiver {receiver}."
     except ContractLogicError as e:
-        return f"Error registering basename: {str(e)}"
+        return f"Error performing {action} on vault: {str(e)}"
     except Exception as e:
-        return f"Unexpected error registering basename: {str(e)}"
+        return f"Unexpected error performing {action} on vault: {str(e)}"
 
 
 # Create the Based Agent with all available functions
