@@ -24,7 +24,7 @@
 1.4 poetry run uvicorn ai_agent.server:app --reload --host 0.0.0.0 --port 8001
 
 ### Note
-- now, platfrom ai now fully intgrate Frontend, Backend, and Smart Contract cause of time limit, can test it seperately for CDP & LLM can run&test via API, from FE side now can create USDC Vault and AI agent
+- Now, AI platfrom is not fully intgrated Frontend, Backend, and Smart Contract, cause of time limit, you can test it seperately for CDP & LLM can run&test via Backend(API), for FE side now can create USDC Vault and AI agent with API
 
 ### Screenshots:
 ![SS1](/3.png "ss1")
