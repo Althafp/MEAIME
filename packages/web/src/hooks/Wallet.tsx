@@ -205,9 +205,31 @@ export const WalletProvider = ({
             toast.dismiss(loading1);
         }
     }
+    const transfer = async (toAddress: `0x${string}`, amount: number) => {
+        const loading1 = toast.loading('Transferring...');
+    
+        try {
+            const txn = await publicClient.sendTransaction({
+                to: toAddress,
+                value: BigInt(amount * 10 ** 18), // Amount in Wei (18 decimals for ETH)
+                account: address as `0x${string}`,
+            });
+            const result = await publicClient.waitForTransactionReceipt({ hash: txn });
+    
+            if (result.status === "success") {
+                toast.success('Transfer successful');
+            }
+        } catch (error: any) {
+            console.error('Transfer error: ', error);
+            toast.error('Transfer error: ', error.message || error);
+        } finally {
+            toast.dismiss(loading1);
+        }
+    };
+    
 
   return (
-    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke, topup, vaultAddress }} {...rest}>
+    <WalletContext.Provider value={{ createVault, deposit, withdraw, grant, revoke, topup, transfer, vaultAddress }} {...rest}>
       {children}
     </WalletContext.Provider>
   );

@@ -8,6 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { baseSepolia, polygon } from 'viem/chains';
 
+
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
@@ -15,7 +16,11 @@ import { Toaster } from "react-hot-toast";
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 
+import { RainbowKitProvider, ConnectButton } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
+
 import { baseSepolia, polygon } from './constants';
+
 
 import './index.css'
 
@@ -23,6 +28,7 @@ import Main from "./pages/Main";
 import AI from "./pages/AI";
 import Portfolio from "./pages/Portfolio";
 import Chat from "./pages/Chat";
+
 
 import { WalletProvider } from './hooks/Wallet';
 
